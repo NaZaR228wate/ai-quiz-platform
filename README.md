@@ -148,6 +148,34 @@ Frontend URL:
 http://localhost:5173
 ```
 
+## Docker Setup
+
+Run the full project with one command:
+
+```bash
+docker compose up --build
+```
+
+Frontend:
+
+```text
+http://localhost:5173
+```
+
+Backend Swagger UI:
+
+```text
+http://localhost:8000/docs
+```
+
+The Docker setup starts:
+
+- FastAPI backend on port `8000`
+- Vite frontend on port `5173`
+- SQLite database stored in a Docker volume
+
+The backend container runs Alembic migrations before starting Uvicorn.
+
 ## Environment Variables
 
 `.env` files and API keys are not included in this repository.
