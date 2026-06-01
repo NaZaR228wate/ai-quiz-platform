@@ -112,7 +112,7 @@ export function CourseDetailsPage() {
     return (
       <section className="page-card">
         <h1>Course Details</h1>
-        <p>Loading course details...</p>
+        <p>Loading course workspace...</p>
       </section>
     );
   }
@@ -120,7 +120,7 @@ export function CourseDetailsPage() {
   if (error) {
     return (
       <section className="page-card">
-        <h1>Course Details</h1>
+        <h1>Course workspace</h1>
         <div className="form-error">{error}</div>
       </section>
     );
@@ -133,7 +133,7 @@ export function CourseDetailsPage() {
           <div className="item-header">
             <div>
               <h1>{cleanDemoText(course?.title || "Course")}</h1>
-              <p>{course?.description ? cleanDemoText(course.description) : "No description provided."}</p>
+              <p>{course?.description ? cleanDemoText(course.description) : "Course overview and learning path."}</p>
             </div>
             <Link className="secondary-link" to="/teacher">
               Back to teacher dashboard
@@ -188,7 +188,7 @@ export function CourseDetailsPage() {
               {createError ? <div className="form-error">{createError}</div> : null}
             </form>
           ) : (
-            <p>Add lessons or chapters inside this course.</p>
+          <p>Add curriculum topics that can contain materials and quizzes.</p>
           )}
 
           {deleteError ? <div className="form-error">{deleteError}</div> : null}
@@ -198,7 +198,7 @@ export function CourseDetailsPage() {
       <section className="page-card">
         <h2>Topics</h2>
         {topics.length === 0 ? (
-          <p className="empty-state">No topics yet. Add a topic for this course.</p>
+          <p className="empty-state">No topics yet. Add your first lesson topic to start building this course.</p>
         ) : (
           <ul className="course-list">
             {topics.map((topic) => (

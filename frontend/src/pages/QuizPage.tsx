@@ -236,7 +236,7 @@ export function QuizPage() {
           <div>
             {currentUser?.role === "student" ? <span className="eyebrow">Quiz taking</span> : null}
             <h1>{quiz?.title}</h1>
-            <p>{quiz?.description || "No description provided."}</p>
+            <p>{quiz?.description || "Quiz questions and live session controls."}</p>
           </div>
           {currentUser?.role === "teacher" && quiz?.topic_id ? (
             <Link className="secondary-link" to={`/topics/${quiz.topic_id}`}>
@@ -252,7 +252,7 @@ export function QuizPage() {
 
         <dl className={currentUser?.role === "student" ? "quiz-meta-list" : "profile-list"}>
           <div>
-            <dt>Quiz ID</dt>
+            <dt>Quiz reference</dt>
             <dd>{quiz?.id}</dd>
           </div>
           <div>
@@ -308,7 +308,7 @@ export function QuizPage() {
         ) : null}
 
         {questions.length === 0 ? (
-          <p>No questions yet.</p>
+          <p className="empty-state">No questions yet. Add questions manually or generate them from learning material.</p>
         ) : currentUser?.role === "teacher" ? (
           <ol className="question-list">
             {questions.map((question, questionIndex) => (
@@ -471,7 +471,7 @@ export function QuizPage() {
 
           {!isAnalyticsLoading && !analyticsError && analytics ? (
             <>
-              {analytics.attempts_count === 0 ? <p>No attempts yet.</p> : null}
+              {analytics.attempts_count === 0 ? <p className="empty-state">No student attempts yet. Start a live session or share this quiz with students.</p> : null}
 
               <dl className="analytics-grid">
                 <div>

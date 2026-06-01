@@ -170,7 +170,7 @@ export function SessionTakePage() {
         ) : null}
 
         {questions.length === 0 ? (
-          <p>No questions yet.</p>
+          <p className="empty-state">This session does not have quiz questions yet. Ask your teacher to check the quiz setup.</p>
         ) : activeQuestion ? (
           <div className="quiz-taking-layout">
             <aside className="question-sidebar">

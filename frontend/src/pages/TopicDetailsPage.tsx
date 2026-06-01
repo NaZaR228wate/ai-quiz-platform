@@ -227,8 +227,8 @@ export function TopicDetailsPage() {
   if (isLoading) {
     return (
       <section className="page-card">
-        <h1>Topic Details</h1>
-        <p>Loading topic details...</p>
+        <h1>Topic workspace</h1>
+        <p>Loading learning materials...</p>
       </section>
     );
   }
@@ -248,7 +248,7 @@ export function TopicDetailsPage() {
   if (error) {
     return (
       <section className="page-card">
-        <h1>Topic Details</h1>
+        <h1>Topic workspace</h1>
         <div className="form-error">{error}</div>
       </section>
     );
@@ -260,7 +260,7 @@ export function TopicDetailsPage() {
         <div className="item-header">
           <div>
             <h1>{cleanDemoText(topic?.title || "Topic")}</h1>
-            <p>{topic?.description ? cleanDemoText(topic.description) : "No description provided."}</p>
+            <p>{topic?.description ? cleanDemoText(topic.description) : "Learning materials and quizzes for this topic."}</p>
           </div>
           {topic?.course_id ? (
             <Link className="secondary-link" to={`/courses/${topic.course_id}`}>
@@ -324,7 +324,7 @@ export function TopicDetailsPage() {
           {materialDeleteError ? <div className="form-error">{materialDeleteError}</div> : null}
 
           {materials.length === 0 ? (
-            <p className="empty-state">No materials yet. Add learning material to generate a quiz.</p>
+            <p className="empty-state">No materials yet. Add lesson content so AI can generate a quiz.</p>
           ) : (
             <ul className="course-list">
               {materials.map((material) => {
@@ -394,7 +394,7 @@ export function TopicDetailsPage() {
           {isQuizzesLoading ? (
             <p>Loading quizzes...</p>
           ) : quizzes.length === 0 ? (
-            <p className="empty-state">No quizzes yet. Generate a quiz from a material.</p>
+            <p className="empty-state">No quizzes yet. Generate an AI quiz from one of your materials.</p>
           ) : (
             <ul className="course-list">
               {quizzes.map((quiz) => (

@@ -347,7 +347,7 @@ export function TeacherDashboardPage() {
             <p>Latest quizzes generated or created for your classes.</p>
           </div>
           {dashboardData.recentQuizzes.length === 0 ? (
-            <p className="empty-state">No quizzes yet. Generate a quiz from a material.</p>
+            <p className="empty-state">No quizzes yet. Add material and generate your first AI quiz.</p>
           ) : (
             <ul className="compact-list">
               {dashboardData.recentQuizzes.slice(0, 5).map((quiz) => (
@@ -403,7 +403,7 @@ export function TeacherDashboardPage() {
         {sessionError ? <div className="form-error">{sessionError}</div> : null}
 
         {activeSessions.length === 0 ? (
-          <p className="empty-state empty-state--compact">No active sessions right now.</p>
+          <p className="empty-state empty-state--compact">No active sessions right now. Start a live session from any quiz when students are ready.</p>
         ) : (
           <ul className="course-list session-list session-list--compact">
             {activeSessions.map((session) => (
@@ -463,7 +463,7 @@ export function TeacherDashboardPage() {
         {sessionError ? <div className="form-error">{sessionError}</div> : null}
 
         {closedSessions.length === 0 ? (
-          <p className="empty-state">No closed sessions yet.</p>
+          <p className="empty-state">No session history yet. Closed sessions will appear here for review.</p>
         ) : (
           <ul className="course-list session-list">
             {closedSessions.map((session) => (
@@ -571,7 +571,7 @@ export function TeacherDashboardPage() {
 
       <section className="page-card">
         {courses.length === 0 ? (
-          <p className="empty-state">No courses yet. Create your first course to start.</p>
+          <p className="empty-state">No courses yet. Create your first course to organize lessons, materials and quizzes.</p>
         ) : (
           <ul className="course-list">
             {courses.map((course) => (
