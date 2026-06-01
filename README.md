@@ -39,6 +39,22 @@ A web platform for teachers and students that allows teachers to create courses,
 - Student dashboard
 - Responsive UI
 
+## Screenshots
+
+![Teacher Dashboard](docs/screenshots/teacher-dashboard.png)
+
+![Courses Page](docs/screenshots/courses-page.png)
+
+![Topic Page](docs/screenshots/topic-page.png)
+
+![Quiz Page](docs/screenshots/quiz-page.png)
+
+![Live Session Dashboard](docs/screenshots/live-session-dashboard.png)
+
+![Student Dashboard](docs/screenshots/student-dashboard.png)
+
+![Analytics Page](docs/screenshots/analytics-page.png)
+
 ## Project Structure
 
 ```text
