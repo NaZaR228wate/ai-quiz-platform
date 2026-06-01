@@ -10,6 +10,7 @@ import { JoinSessionPage } from "../pages/JoinSessionPage";
 import { LoginPage } from "../pages/LoginPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
 import { QuizPage } from "../pages/QuizPage";
+import { QuestionBankPage } from "../pages/QuestionBankPage";
 import { RegisterPage } from "../pages/RegisterPage";
 import { SessionDashboardPage } from "../pages/SessionDashboardPage";
 import { SessionTakePage } from "../pages/SessionTakePage";
@@ -30,6 +31,14 @@ export function AppRouter() {
             element={
               <ProtectedRoute>
                 <TeacherDashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/question-bank"
+            element={
+              <ProtectedRoute>
+                <QuestionBankPage />
               </ProtectedRoute>
             }
           />

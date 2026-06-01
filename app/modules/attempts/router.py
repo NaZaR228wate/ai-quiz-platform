@@ -2,8 +2,23 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.modules.attempts.schemas import AttemptCreate, AttemptRead, QuizAnalyticsRead
-from app.modules.attempts.service import create_attempt, get_attempt, get_quiz_analytics, list_quiz_attempts
+from app.modules.attempts.schemas import (
+    AttemptCreate,
+    AttemptExplanationRead,
+    AttemptRead,
+    AttemptStudyPlanRead,
+    QuizAnalyticsRead,
+    WeakTopicRead,
+)
+from app.modules.attempts.service import (
+    create_attempt,
+    generate_attempt_explanation,
+    generate_attempt_study_plan,
+    get_attempt,
+    get_quiz_analytics,
+    get_weak_topics,
+    list_quiz_attempts,
+)
 from app.modules.auth.dependencies import get_current_user
 from app.modules.users.models import User
 
@@ -42,6 +57,24 @@ def get_attempt_endpoint(
     return get_attempt(db, current_user, attempt_id)
 
 
+@router.post("/attempts/{attempt_id}/explanation", response_model=AttemptExplanationRead)
+def generate_attempt_explanation_endpoint(
+    attempt_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return generate_attempt_explanation(db, current_user, attempt_id)
+
+
+@router.post("/attempts/{attempt_id}/study-plan", response_model=AttemptStudyPlanRead)
+def generate_attempt_study_plan_endpoint(
+    attempt_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return generate_attempt_study_plan(db, current_user, attempt_id)
+
+
 @router.get("/quizzes/{quiz_id}/attempts", response_model=list[AttemptRead])
 def list_quiz_attempts_endpoint(
     quiz_id: int,
@@ -58,3 +91,11 @@ def get_quiz_analytics_endpoint(
     current_teacher: User = Depends(get_current_teacher),
 ):
     return get_quiz_analytics(db, current_teacher, quiz_id)
+
+
+@router.get("/analytics/weak-topics", response_model=list[WeakTopicRead])
+def get_weak_topics_endpoint(
+    db: Session = Depends(get_db),
+    current_teacher: User = Depends(get_current_teacher),
+):
+    return get_weak_topics(db, current_teacher)

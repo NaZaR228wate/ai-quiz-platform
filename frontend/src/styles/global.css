@@ -528,6 +528,45 @@ button {
   white-space: nowrap;
 }
 
+.weak-topics-list {
+  margin-top: 18px;
+}
+
+.weak-topics-list li > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.weak-topics-list strong {
+  color: var(--warning);
+  white-space: nowrap;
+}
+
+.question-bank-options {
+  display: grid;
+  gap: 10px;
+}
+
+.question-bank-option-row {
+  align-items: center;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.inline-check {
+  align-items: center;
+  color: var(--text);
+  display: inline-flex;
+  font-weight: 750;
+  gap: 8px;
+}
+
+.inline-check input {
+  width: auto;
+}
+
 .auth-page {
   display: grid;
   justify-items: center;
@@ -1443,6 +1482,54 @@ button {
   color: var(--text);
 }
 
+.leaderboard-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.leaderboard-row {
+  align-items: center;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 56px minmax(220px, 1.5fr) repeat(3, minmax(120px, 1fr));
+  padding: 14px;
+}
+
+.leaderboard-row--top {
+  background: linear-gradient(180deg, #ffffff, #eef6ff);
+  border-color: #c5d8ff;
+}
+
+.leaderboard-rank {
+  align-items: center;
+  background: #eaf1ff;
+  border: 1px solid #c5d8ff;
+  border-radius: 999px;
+  color: var(--primary);
+  display: inline-flex;
+  font-size: 1.2rem;
+  font-weight: 900;
+  height: 40px;
+  justify-content: center;
+  width: 40px;
+}
+
+.leaderboard-student {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.leaderboard-student span {
+  color: var(--muted);
+  font-size: 0.92rem;
+  overflow-wrap: anywhere;
+}
+
 .submit-panel {
   display: grid;
   gap: 14px;
@@ -1531,6 +1618,98 @@ button {
 
 .compact-result-list {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.explanation-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.explanation-actions .nav-button {
+  min-width: 180px;
+}
+
+.explanation-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f5fbff 100%);
+}
+
+.study-plan-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.study-plan-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 16px;
+}
+
+.study-plan-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  padding: 16px;
+}
+
+.study-plan-section ul {
+  color: #34445a;
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding-left: 20px;
+}
+
+.explanation-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.explanation-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  padding: 16px;
+}
+
+.explanation-item h3 {
+  margin-bottom: 12px;
+}
+
+.explanation-item p {
+  color: #34445a;
+  margin: 12px 0 0;
+}
+
+.explanation-answer-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+}
+
+.explanation-answer-grid div {
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.explanation-answer-grid dt {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.explanation-answer-grid dd {
+  color: var(--text);
+  font-weight: 800;
+  margin: 4px 0 0;
 }
 
 .review-option.selected {
@@ -1640,6 +1819,14 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .explanation-answer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .study-plan-grid {
+    grid-template-columns: 1fr;
+  }
+
   .guest-hero__actions {
     width: 100%;
   }
@@ -1656,6 +1843,15 @@ button {
 
   .session-dashboard-header {
     flex-direction: column;
+  }
+
+  .leaderboard-row {
+    align-items: flex-start;
+    grid-template-columns: 44px 1fr;
+  }
+
+  .leaderboard-row > div:nth-child(n + 3) {
+    grid-column: 2;
   }
 
   .link-actions,

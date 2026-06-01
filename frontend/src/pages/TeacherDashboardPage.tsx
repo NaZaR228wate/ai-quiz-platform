@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 
 import { authApi } from "../api/authApi";
+import { attemptsApi, WeakTopic } from "../api/attemptsApi";
 import { Course, coursesApi } from "../api/coursesApi";
 import { Quiz, quizzesApi } from "../api/quizzesApi";
 import { SessionAnalytics, sessionsApi, TeacherSessionSummary } from "../api/sessionsApi";
@@ -23,6 +24,7 @@ type DashboardData = {
   metrics: DashboardMetrics;
   recentQuizzes: Quiz[];
   sessionAnalytics: SessionAnalytics[];
+  weakTopics: WeakTopic[];
 };
 
 export function TeacherDashboardPage() {
@@ -34,6 +36,7 @@ export function TeacherDashboardPage() {
   const [dashboardData, setDashboardData] = useState<DashboardData>({
     recentQuizzes: [],
     sessionAnalytics: [],
+    weakTopics: [],
     metrics: {
       courses: 0,
       quizzes: 0,
@@ -391,6 +394,29 @@ export function TeacherDashboardPage() {
         </div>
       </section>
 
+      <section className="page-card">
+        <div>
+          <h2>Weakest Topics</h2>
+          <p>Topics with the lowest average score across student attempts.</p>
+        </div>
+
+        {dashboardData.weakTopics.length === 0 ? (
+          <p className="empty-state">No topic performance data yet. Student attempts will appear here after quizzes are submitted.</p>
+        ) : (
+          <ul className="compact-list weak-topics-list">
+            {dashboardData.weakTopics.map((topic) => (
+              <li key={topic.topic_id}>
+                <div>
+                  <Link to={`/topics/${topic.topic_id}`}>{cleanDemoText(topic.topic_title)}</Link>
+                  <span>{topic.attempts_count} attempts</span>
+                </div>
+                <strong>{topic.average_score}% avg</strong>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
       <section className="page-card sessions-panel-header">
         <h2>My Sessions</h2>
         <p>Manage active classroom sessions and review completed session analytics.</p>
@@ -655,7 +681,7 @@ async function loadDashboardData(courses: Course[], sessions: TeacherSessionSumm
   );
   const quizzes = quizzesByTopic.flat();
 
-  const [questionGroups, sessionAnalytics] = await Promise.all([
+  const [questionGroups, sessionAnalytics, weakTopicsResponse] = await Promise.all([
     Promise.all(
       quizzes.map(async (quiz) => {
         const response = await quizzesApi.getQuizQuestions(String(quiz.id));
@@ -668,6 +694,7 @@ async function loadDashboardData(courses: Course[], sessions: TeacherSessionSumm
         return response.data;
       }),
     ),
+    attemptsApi.getWeakTopics(),
   ]);
 
   const aiGeneratedQuizIds = new Set(
@@ -692,6 +719,7 @@ async function loadDashboardData(courses: Course[], sessions: TeacherSessionSumm
       (firstQuiz, secondQuiz) => new Date(secondQuiz.created_at).getTime() - new Date(firstQuiz.created_at).getTime(),
     ),
     sessionAnalytics,
+    weakTopics: weakTopicsResponse.data,
     metrics: {
       courses: courses.length,
       quizzes: quizzes.length,

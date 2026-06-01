@@ -192,6 +192,12 @@ The Docker setup starts:
 
 The backend container runs Alembic migrations before starting Uvicorn.
 
+To seed demo data inside Docker:
+
+```bash
+docker compose exec backend python scripts/seed_demo_data.py
+```
+
 ## Environment Variables
 
 `.env` files and API keys are not included in this repository.
@@ -265,6 +271,12 @@ To create a populated presentation dataset, run:
 
 ```bash
 python scripts/seed_demo_data.py
+```
+
+Or inside Docker:
+
+```bash
+docker compose exec backend python scripts/seed_demo_data.py
 ```
 
 The seed creates:

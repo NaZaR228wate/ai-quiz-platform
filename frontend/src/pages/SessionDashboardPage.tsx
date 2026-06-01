@@ -74,7 +74,7 @@ export function SessionDashboardPage() {
 
     const intervalId = window.setInterval(() => {
       loadSessionDashboard(false);
-    }, 5000);
+    }, 10000);
 
     return () => window.clearInterval(intervalId);
   }, [loadSessionDashboard, session?.status]);
@@ -165,6 +165,8 @@ export function SessionDashboardPage() {
       </section>
     );
   }
+
+  const leaderboard = buildLeaderboard(attempts);
 
   return (
     <div className="dashboard-grid">
@@ -294,6 +296,48 @@ export function SessionDashboardPage() {
       </section>
 
       <section className="page-card">
+        <div className="item-header">
+          <div>
+            <h2>Live Leaderboard</h2>
+            <p>Ranking updates automatically while the session is active.</p>
+          </div>
+          {session?.status === "active" ? <span className="status-badge active">Live</span> : null}
+        </div>
+
+        {leaderboard.length === 0 ? (
+          <p className="empty-state">No leaderboard entries yet. Student results will appear after submission.</p>
+        ) : (
+          <div className="leaderboard-list">
+            {leaderboard.map((entry) => (
+              <div key={entry.attempt.id} className={`leaderboard-row ${entry.rank <= 3 ? "leaderboard-row--top" : ""}`}>
+                <div className="leaderboard-rank" aria-label={`Rank ${entry.rank}`}>
+                  {getRankLabel(entry.rank)}
+                </div>
+                <div className="leaderboard-student">
+                  <strong>{entry.attempt.student_name || "Unnamed student"}</strong>
+                  <span>{entry.attempt.student_email}</span>
+                </div>
+                <div>
+                  <span className="helper-text">Score</span>
+                  <strong>{entry.attempt.percent}%</strong>
+                </div>
+                <div>
+                  <span className="helper-text">Correct</span>
+                  <strong>
+                    {entry.attempt.score} / {entry.attempt.total_questions}
+                  </strong>
+                </div>
+                <div>
+                  <span className="helper-text">Completion time</span>
+                  <strong>{new Date(entry.attempt.created_at).toLocaleTimeString()}</strong>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="page-card">
         <h2>Session attempts</h2>
         {attempts.length === 0 ? (
           <p className="empty-state">No students have submitted yet. Keep this page open during the session.</p>
@@ -363,6 +407,40 @@ function getCompletionRate(analytics: SessionAnalytics): number {
   }
 
   return Math.round((analytics.finished_count / analytics.students_count) * 100);
+}
+
+type LeaderboardEntry = {
+  rank: number;
+  attempt: SessionAttemptSummary;
+};
+
+function buildLeaderboard(attempts: SessionAttemptSummary[]): LeaderboardEntry[] {
+  return [...attempts]
+    .sort((firstAttempt, secondAttempt) => {
+      if (secondAttempt.percent !== firstAttempt.percent) {
+        return secondAttempt.percent - firstAttempt.percent;
+      }
+
+      return new Date(firstAttempt.created_at).getTime() - new Date(secondAttempt.created_at).getTime();
+    })
+    .map((attempt, index) => ({
+      rank: index + 1,
+      attempt,
+    }));
+}
+
+function getRankLabel(rank: number): string {
+  if (rank === 1) {
+    return "🥇";
+  }
+  if (rank === 2) {
+    return "🥈";
+  }
+  if (rank === 3) {
+    return "🥉";
+  }
+
+  return String(rank);
 }
 
 function cleanDemoText(value: string): string {

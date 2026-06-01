@@ -73,9 +73,14 @@ export function Navbar() {
           </>
         ) : null}
         {currentUser?.role === "teacher" ? (
-          <NavLink to="/teacher" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-            Dashboard
-          </NavLink>
+          <>
+            <NavLink to="/teacher" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
+              Dashboard
+            </NavLink>
+            <NavLink to="/question-bank" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
+              Question Bank
+            </NavLink>
+          </>
         ) : null}
         {currentUser?.role === "student" ? (
           <>

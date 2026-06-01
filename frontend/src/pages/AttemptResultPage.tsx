@@ -3,9 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { authApi } from "../api/authApi";
-import { Attempt, attemptsApi } from "../api/attemptsApi";
+import { Attempt, AttemptExplanation, AttemptStudyPlan, attemptsApi } from "../api/attemptsApi";
 import { Quiz, QuizQuestion, quizzesApi } from "../api/quizzesApi";
 import { User } from "../auth/authTypes";
+import { downloadCertificatePdf } from "../utils/certificatePdf";
 
 export function AttemptResultPage() {
   const { attemptId } = useParams();
@@ -14,7 +15,13 @@ export function AttemptResultPage() {
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isExplanationLoading, setIsExplanationLoading] = useState(false);
+  const [isStudyPlanLoading, setIsStudyPlanLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [explanationError, setExplanationError] = useState<string | null>(null);
+  const [explanation, setExplanation] = useState<AttemptExplanation | null>(null);
+  const [studyPlanError, setStudyPlanError] = useState<string | null>(null);
+  const [studyPlan, setStudyPlan] = useState<AttemptStudyPlan | null>(null);
 
   useEffect(() => {
     let ignore = false;
@@ -68,6 +75,56 @@ export function AttemptResultPage() {
     return new Map(attempt?.answers.map((answer) => [answer.question_id, answer]) ?? []);
   }, [attempt]);
 
+  async function handleExplainMistakes() {
+    if (!attemptId) {
+      return;
+    }
+
+    setIsExplanationLoading(true);
+    setExplanationError(null);
+
+    try {
+      const response = await attemptsApi.getAttemptExplanation(attemptId);
+      setExplanation(response.data);
+    } catch (caughtError) {
+      setExplanationError(getExplanationErrorMessage(caughtError));
+    } finally {
+      setIsExplanationLoading(false);
+    }
+  }
+
+  async function handleGenerateStudyPlan() {
+    if (!attemptId) {
+      return;
+    }
+
+    setIsStudyPlanLoading(true);
+    setStudyPlanError(null);
+
+    try {
+      const response = await attemptsApi.getAttemptStudyPlan(attemptId);
+      setStudyPlan(response.data);
+    } catch (caughtError) {
+      setStudyPlanError(getStudyPlanErrorMessage(caughtError));
+    } finally {
+      setIsStudyPlanLoading(false);
+    }
+  }
+
+  function handleDownloadCertificate() {
+    if (!attempt || !quiz || !currentUser) {
+      return;
+    }
+
+    downloadCertificatePdf({
+      platformName: "AI Quiz Platform",
+      studentName: currentUser.full_name || currentUser.email,
+      quizName: quiz.title,
+      score: `${attempt.score} / ${attempt.total_questions}`,
+      completionDate: new Date(attempt.created_at).toLocaleString(),
+    });
+  }
+
   if (isLoading) {
     return (
       <section className="page-card">
@@ -89,6 +146,7 @@ export function AttemptResultPage() {
   const percent =
     attempt && attempt.total_questions > 0 ? Math.round((attempt.score / attempt.total_questions) * 100) : 0;
   const resultMessage = percent >= 80 ? "Great result" : percent >= 50 ? "Good effort" : "Keep practicing";
+  const hasIncorrectAnswers = Boolean(attempt?.answers.some((answer) => !answer.is_correct));
 
   return (
     <div className="dashboard-grid">
@@ -139,7 +197,75 @@ export function AttemptResultPage() {
             <dd>{attempt ? new Date(attempt.created_at).toLocaleString() : ""}</dd>
           </div>
         </dl>
+
+        {currentUser?.role === "student" ? (
+          <div className="explanation-actions">
+            <button type="button" className="nav-button" onClick={handleDownloadCertificate}>
+              Download Certificate
+            </button>
+            <button
+              type="button"
+              className="nav-button"
+              disabled={isStudyPlanLoading}
+              onClick={handleGenerateStudyPlan}
+            >
+              {isStudyPlanLoading ? "Generating study plan..." : "Generate Study Plan"}
+            </button>
+            <button
+              type="button"
+              className="nav-button"
+              disabled={isExplanationLoading || !hasIncorrectAnswers}
+              onClick={handleExplainMistakes}
+            >
+              {isExplanationLoading ? "Generating explanation..." : "Explain my mistakes"}
+            </button>
+            {!hasIncorrectAnswers ? <p className="helper-text">No mistakes to explain. Great work.</p> : null}
+            {studyPlanError ? <div className="form-error">{studyPlanError}</div> : null}
+          </div>
+        ) : null}
       </section>
+
+      {studyPlan ? (
+        <section className="page-card study-plan-card">
+          <h2>AI Study Plan</h2>
+          <div className="study-plan-grid">
+            <StudyPlanSection title="Weak topics" items={studyPlan.weak_topics} />
+            <StudyPlanSection title="What to study" items={studyPlan.what_to_study} />
+            <StudyPlanSection title="Recommended order" items={studyPlan.recommended_order} />
+            <StudyPlanSection title="Practice advice" items={studyPlan.practice_advice} />
+          </div>
+        </section>
+      ) : null}
+
+      {explanation || explanationError ? (
+        <section className="page-card explanation-card">
+          <h2>AI explanation</h2>
+          {explanationError ? <div className="form-error">{explanationError}</div> : null}
+          {explanation?.explanations.length === 0 ? (
+            <p className="empty-state">No mistakes found for this attempt.</p>
+          ) : null}
+          {explanation?.explanations.length ? (
+            <div className="explanation-list">
+              {explanation.explanations.map((item, index) => (
+                <article key={`${item.question_text}-${index}`} className="explanation-item">
+                  <h3>{item.question_text}</h3>
+                  <dl className="explanation-answer-grid">
+                    <div>
+                      <dt>Your answer</dt>
+                      <dd>{item.incorrect_answer}</dd>
+                    </div>
+                    <div>
+                      <dt>Correct answer</dt>
+                      <dd>{item.correct_answer}</dd>
+                    </div>
+                  </dl>
+                  <p>{item.explanation}</p>
+                </article>
+              ))}
+            </div>
+          ) : null}
+        </section>
+      ) : null}
 
       <section className="page-card">
         <h2>Answer review</h2>
@@ -191,6 +317,23 @@ export function AttemptResultPage() {
   );
 }
 
+function StudyPlanSection({ title, items }: { title: string; items: string[] }) {
+  return (
+    <div className="study-plan-section">
+      <h3>{title}</h3>
+      {items.length === 0 ? (
+        <p className="helper-text">No recommendations yet.</p>
+      ) : (
+        <ul>
+          {items.map((item, index) => (
+            <li key={`${title}-${index}`}>{item}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function getErrorMessage(error: unknown): string {
   if (error instanceof AxiosError) {
     if (error.response?.status === 404) {
@@ -208,4 +351,36 @@ function getErrorMessage(error: unknown): string {
   }
 
   return "Request failed. Please try again.";
+}
+
+function getExplanationErrorMessage(error: unknown): string {
+  if (error instanceof AxiosError) {
+    const detail = error.response?.data?.detail;
+    if (detail === "OpenAI API key is not configured") {
+      return "AI explanations are not configured yet. Please add OPENAI_API_KEY and try again.";
+    }
+    if (typeof detail === "string") {
+      return detail;
+    }
+
+    return "Could not generate explanation. Please try again.";
+  }
+
+  return "Could not generate explanation. Please try again.";
+}
+
+function getStudyPlanErrorMessage(error: unknown): string {
+  if (error instanceof AxiosError) {
+    const detail = error.response?.data?.detail;
+    if (detail === "AI study plan is not configured. Please add OPENAI_API_KEY.") {
+      return detail;
+    }
+    if (typeof detail === "string") {
+      return detail;
+    }
+
+    return "Could not generate study plan. Please try again.";
+  }
+
+  return "Could not generate study plan. Please try again.";
 }

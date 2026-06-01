@@ -44,3 +44,30 @@ class QuizAnalyticsRead(BaseModel):
     total_questions: int
     best_score: int
     worst_score: int
+
+
+class AttemptMistakeExplanationRead(BaseModel):
+    question_text: str
+    incorrect_answer: str
+    correct_answer: str
+    explanation: str
+
+
+class AttemptExplanationRead(BaseModel):
+    attempt_id: int
+    explanations: list[AttemptMistakeExplanationRead]
+
+
+class AttemptStudyPlanRead(BaseModel):
+    attempt_id: int
+    weak_topics: list[str]
+    what_to_study: list[str]
+    recommended_order: list[str]
+    practice_advice: list[str]
+
+
+class WeakTopicRead(BaseModel):
+    topic_id: int
+    topic_title: str
+    average_score: int
+    attempts_count: int
