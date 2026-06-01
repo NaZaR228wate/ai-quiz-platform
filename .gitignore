@@ -1,0 +1,26 @@
+# Environment files
+.env
+*.env
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Frontend/build output
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+
+# OS/editors
+.DS_Store
+.idea/
+.vscode/
+.vs/
