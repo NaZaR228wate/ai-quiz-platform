@@ -1,11 +1,13 @@
 import { Outlet } from "react-router-dom";
 
+import { ActiveSessionBar } from "./ActiveSessionBar";
 import { Navbar } from "./Navbar";
 
 export function Layout() {
   return (
     <div className="app-shell">
       <Navbar />
+      <ActiveSessionBar />
       <main className="page-container">
         <Outlet />
       </main>

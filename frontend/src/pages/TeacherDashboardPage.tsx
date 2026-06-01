@@ -193,6 +193,10 @@ export function TeacherDashboardPage() {
   }
 
   async function handleReopenSession(sessionId: number) {
+    if (!window.confirm("Reopen this session?")) {
+      return;
+    }
+
     setReopeningSessionId(sessionId);
     setSessionError(null);
 

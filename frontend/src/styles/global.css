@@ -142,6 +142,58 @@ button {
   width: 100%;
 }
 
+.active-session-bar {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid #c5d8ff;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.08);
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 12px 32px;
+  position: sticky;
+  top: 68px;
+  z-index: 9;
+}
+
+.active-session-bar__content {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-width: 0;
+}
+
+.active-session-bar__content strong {
+  max-width: 32rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.active-session-bar__code {
+  background: #eaf1ff;
+  border: 1px solid #c5d8ff;
+  border-radius: 999px;
+  color: var(--primary);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+}
+
+.active-session-bar__meta {
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.active-session-bar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
 .page-card,
 .course-item,
 .question-item {
@@ -1503,6 +1555,30 @@ button {
     gap: 14px;
     padding: 16px 18px;
     position: static;
+  }
+
+  .active-session-bar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 14px;
+    top: 0;
+  }
+
+  .active-session-bar__content {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .active-session-bar__content strong {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .active-session-bar__actions {
+    justify-content: flex-start;
+    width: 100%;
   }
 
   .live-session-bar {

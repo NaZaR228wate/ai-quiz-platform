@@ -259,6 +259,32 @@ Material content:
 Linear equation is an equation where the variable has power 1. Example: 2x + 3 = 7. To solve it, move constants to one side and divide by the coefficient of the variable.
 ```
 
+## Demo Seed Data
+
+To create a populated presentation dataset, run:
+
+```bash
+python scripts/seed_demo_data.py
+```
+
+The seed creates:
+
+- 3 courses: Math Grade 10, Physics Grade 10, Biology Grade 10
+- 8 realistic topics
+- lesson materials for each topic
+- 10 quizzes with questions and options
+- live sessions with active and closed statuses
+- realistic student attempts for analytics
+
+Demo accounts:
+
+```text
+teacher@example.com / 12345678
+student@example.com / 12345678
+anna.student@example.com / 12345678
+mark.student@example.com / 12345678
+```
+
 ## Presentation Status
 
 This is an MVP version created for demonstration and future SaaS development.

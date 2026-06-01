@@ -99,7 +99,7 @@ export function SessionDashboardPage() {
   }
 
   async function handleReopenSession() {
-    if (!sessionId) {
+    if (!sessionId || !window.confirm("Reopen this session?")) {
       return;
     }
 

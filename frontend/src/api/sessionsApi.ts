@@ -1,6 +1,8 @@
 import { Attempt, CreateAttemptRequest } from "./attemptsApi";
 import { apiClient } from "./client";
 
+export const SESSIONS_CHANGED_EVENT = "ai-quiz:sessions-changed";
+
 export type SessionStatus = "active" | "closed";
 
 export type QuizSession = {
@@ -65,7 +67,11 @@ export type TeacherSessionSummary = {
 };
 
 export const sessionsApi = {
-  createSession: (quizId: string) => apiClient.post<QuizSession>(`/quizzes/${quizId}/sessions`),
+  createSession: async (quizId: string) => {
+    const response = await apiClient.post<QuizSession>(`/quizzes/${quizId}/sessions`);
+    notifySessionsChanged();
+    return response;
+  },
   getMySessions: () => apiClient.get<TeacherSessionSummary[]>("/sessions/my"),
   getSession: (sessionId: string) => apiClient.get<QuizSession>(`/sessions/${sessionId}`),
   getSessionByCode: (code: string) => apiClient.get<SessionByCode>(`/sessions/code/${code}`),
@@ -74,7 +80,23 @@ export const sessionsApi = {
     apiClient.post<Attempt>(`/sessions/${sessionId}/attempts`, data),
   getSessionAttempts: (sessionId: string) => apiClient.get<SessionAttemptSummary[]>(`/sessions/${sessionId}/attempts`),
   getSessionAnalytics: (sessionId: string) => apiClient.get<SessionAnalytics>(`/sessions/${sessionId}/analytics`),
-  closeSession: (sessionId: string) => apiClient.post<QuizSession>(`/sessions/${sessionId}/close`),
-  reopenSession: (sessionId: string) => apiClient.post<QuizSession>(`/sessions/${sessionId}/reopen`),
-  deleteSession: (sessionId: string) => apiClient.delete(`/sessions/${sessionId}`),
+  closeSession: async (sessionId: string) => {
+    const response = await apiClient.post<QuizSession>(`/sessions/${sessionId}/close`);
+    notifySessionsChanged();
+    return response;
+  },
+  reopenSession: async (sessionId: string) => {
+    const response = await apiClient.post<QuizSession>(`/sessions/${sessionId}/reopen`);
+    notifySessionsChanged();
+    return response;
+  },
+  deleteSession: async (sessionId: string) => {
+    const response = await apiClient.delete(`/sessions/${sessionId}`);
+    notifySessionsChanged();
+    return response;
+  },
 };
+
+function notifySessionsChanged() {
+  window.dispatchEvent(new Event(SESSIONS_CHANGED_EVENT));
+}
